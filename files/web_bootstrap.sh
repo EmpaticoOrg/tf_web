@@ -9,7 +9,7 @@ sudo cat >/var/www/html/index.html << "EOF"
     <title>Web service</title>
   </head>
   <body>
-    <h1>The Terraform Book Web service</h1>
+    <h1>Empatic.Org placeholder</h1>
   </body>
 </html>
 EOF

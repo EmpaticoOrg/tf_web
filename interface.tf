@@ -39,17 +39,8 @@ variable "web_instance_count" {
   description = "The number of Web instances to create"
 }
 
-variable "app_instance_count" {
-  default     = 1
-  description = "The number of App instances to create"
-}
-
 variable "vpc_id" {
   description = "The VPC ID to launch in"
-}
-
-variable "domain" {
-  description = "The domain to use for the web service"
 }
 
 output "web_elb_address" {
@@ -58,8 +49,4 @@ output "web_elb_address" {
 
 output "web_host_addresses" {
   value = ["${aws_instance.web.*.private_ip}"]
-}
-
-output "app_host_addresses" {
-  value = ["${aws_instance.app.*.private_ip}"]
 }

@@ -32,33 +32,23 @@ resource "aws_elb" "web" {
     lb_protocol       = "http"
   }
 
-  instances = ["${aws_instance.web.*.id}"]
-}
-
-resource "cloudflare_record" "web" {
-  domain = "${var.domain}"
-  name   = "${var.environment}.${var.domain}"
-  value  = "${aws_elb.web.dns_name}"
-  type   = "CNAME"
-  ttl    = 3600
-}
-
-resource "aws_instance" "app" {
-  ami           = "${lookup(var.ami, var.region)}"
-  instance_type = "${var.instance_type}"
-  key_name      = "${var.key_name}"
-  subnet_id     = "${var.private_subnet_ids[0]}"
-  user_data     = "${file("${path.module}/files/app_bootstrap.sh")}"
-
-  vpc_security_group_ids = [
-    "${aws_security_group.app_host_sg.id}",
-  ]
-
-  tags {
-    Name = "${var.environment}-app-${count.index}"
+   listener {
+    instance_port = 80
+    instance_protocol = "http"
+    lb_port = 443
+    lb_protocol = "https"
+    #ssl_certificate_id = "arn:aws:iam::123456789012:server-certificate/certName"
   }
 
-  count = "${var.app_instance_count}"
+  health_check {
+    healthy_threshold = 2
+    unhealthy_threshold = 2
+    timeout = 3
+    target = "HTTP:80/"
+    interval = 30
+  }
+  
+  instances = ["${aws_instance.web.*.id}"]
 }
 
 resource "aws_security_group" "web_inbound_sg" {
@@ -69,6 +59,13 @@ resource "aws_security_group" "web_inbound_sg" {
   ingress {
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -112,6 +109,14 @@ resource "aws_security_group" "web_host_sg" {
     cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
   }
 
+   # HTTP access from the VPC
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
+  }
+  
   egress {
     from_port   = 0
     to_port     = 0
@@ -128,45 +133,5 @@ resource "aws_security_group" "web_host_sg" {
 
   tags {
     Name = "${var.environment}-web-host-sg"
-  }
-}
-
-resource "aws_security_group" "app_host_sg" {
-  name        = "${var.environment}-app-host"
-  description = "Allow App traffic to app hosts"
-  vpc_id      = "${data.aws_vpc.environment.id}"
-
-  # App access from the VPC
-  ingress {
-    from_port   = 1234
-    to_port     = 1234
-    protocol    = "tcp"
-    cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
-  }
-
-  # SSH access from the VPC
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 8
-    to_port     = 0
-    protocol    = "icmp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags {
-    Name = "${var.environment}-app-host-sg"
   }
 }

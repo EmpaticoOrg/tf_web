@@ -47,6 +47,16 @@ variable "domain" {
   description = "The domain of the site"
 }
 
+variable "key" {
+  default = ""
+  description = "Private key"
+}
+
+variable "cert" {
+  default = ""
+  description = "Certificate"
+}
+
 output "web_elb_address" {
   value = "${aws_elb.web.dns_name}"
 }

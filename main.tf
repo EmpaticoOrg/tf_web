@@ -37,7 +37,7 @@ resource "aws_elb" "web" {
     instance_protocol = "http"
     lb_port = 443
     lb_protocol = "https"
-    #ssl_certificate_id = "arn:aws:iam::123456789012:server-certificate/certName"
+    ssl_certificate_id = "${aws_iam_server_certificate.test.arn}"
   }
 
   health_check {
@@ -49,6 +49,16 @@ resource "aws_elb" "web" {
   }
 
   instances = ["${aws_instance.web.*.id}"]
+}
+
+resource "aws_iam_server_certificate" "test" {
+  name_prefix      = "test"
+  certificate_body = "${var.cert}"
+  private_key      = "${var.key}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_route53_zone" "web" {

@@ -47,8 +47,24 @@ resource "aws_elb" "web" {
     target = "HTTP:80/"
     interval = 30
   }
-  
+
   instances = ["${aws_instance.web.*.id}"]
+}
+
+resource "aws_route53_zone" "web" {
+   name = "${var.domain}"
+}
+
+resource "aws_route53_record" "web" {
+  zone_id = "${aws_route53_zone.web.zone_id}"
+  name = "${var.domain}"
+  type = "A"
+
+  alias {
+    name = "${aws_elb.web.dns_name}"
+    zone_id = "${aws_elb.web.zone_id}"
+    evaluate_target_health = true
+  }
 }
 
 resource "aws_security_group" "web_inbound_sg" {

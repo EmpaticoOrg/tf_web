@@ -43,6 +43,10 @@ variable "vpc_id" {
   description = "The VPC ID to launch in"
 }
 
+variable "domain" {
+  description = "The domain of the site"
+}
+
 output "web_elb_address" {
   value = "${aws_elb.web.dns_name}"
 }

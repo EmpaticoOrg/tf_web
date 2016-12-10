@@ -14,7 +14,7 @@ resource "aws_instance" "web" {
   ]
 
   tags {
-    Name    = "${var.app}-${var.role}-${count.index}"
+    Name    = "${var.environment}-${var.app}-${var.role}-${count.index}"
     Project = "${var.app}"
     Stages  = "${var.environment}"
     Roles   = "${var.role}"

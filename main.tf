@@ -113,7 +113,7 @@ resource "aws_security_group" "web_inbound_sg" {
   }
 
   tags {
-    Name = "${var.envrionment}-${var.app}-${var.role}-inbound-sg"
+    Name = "${var.environment}-${var.app}-${var.role}-inbound-sg"
   }
 }
 
@@ -160,6 +160,6 @@ resource "aws_security_group" "web_host_sg" {
   }
 
   tags {
-    Name = "${var.envrionment}-${var.app}-${var.role}-host-sg"
+    Name = "${var.environment}-${var.app}-${var.role}-host-sg"
   }
 }

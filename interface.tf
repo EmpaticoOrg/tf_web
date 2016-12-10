@@ -48,13 +48,21 @@ variable "domain" {
 }
 
 variable "key" {
-  default = ""
+  default     = ""
   description = "Private key"
 }
 
 variable "cert" {
-  default = ""
+  default     = ""
   description = "Certificate"
+}
+
+variable "app" {
+  description = "Name of application"
+}
+
+variable "role" {
+  description = "Role of servers"
 }
 
 output "web_elb_address" {

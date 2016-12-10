@@ -14,7 +14,9 @@ resource "aws_instance" "web" {
   ]
 
   tags {
-    Name = "${var.environment}-web-${count.index}"
+    Name  = "${var.app}-${var.role}-${count.index}"
+    Stage = "${var.environment}"
+    Roles = "${var.role}"
   }
 
   count = "${var.web_instance_count}"
@@ -32,20 +34,20 @@ resource "aws_elb" "web" {
     lb_protocol       = "http"
   }
 
-   listener {
-    instance_port = 80
-    instance_protocol = "http"
-    lb_port = 443
-    lb_protocol = "https"
+  listener {
+    instance_port      = 80
+    instance_protocol  = "http"
+    lb_port            = 443
+    lb_protocol        = "https"
     ssl_certificate_id = "${aws_iam_server_certificate.test.arn}"
   }
 
   health_check {
-    healthy_threshold = 2
+    healthy_threshold   = 2
     unhealthy_threshold = 2
-    timeout = 3
-    target = "HTTP:80/"
-    interval = 30
+    timeout             = 3
+    target              = "HTTP:80/"
+    interval            = 30
   }
 
   instances = ["${aws_instance.web.*.id}"]
@@ -62,23 +64,23 @@ resource "aws_iam_server_certificate" "test" {
 }
 
 resource "aws_route53_zone" "web" {
-   name = "${var.domain}"
+  name = "${var.domain}"
 }
 
 resource "aws_route53_record" "web" {
   zone_id = "${aws_route53_zone.web.zone_id}"
-  name = "*.${var.domain}"
-  type = "A"
+  name    = "*.${var.domain}"
+  type    = "A"
 
   alias {
-    name = "${aws_elb.web.dns_name}"
-    zone_id = "${aws_elb.web.zone_id}"
+    name                   = "${aws_elb.web.dns_name}"
+    zone_id                = "${aws_elb.web.zone_id}"
     evaluate_target_health = true
   }
 }
 
 resource "aws_security_group" "web_inbound_sg" {
-  name        = "${var.environment}-web-inbound"
+  name        = "${var.environment}-${var.app}-${var.role}-inbound"
   description = "Allow HTTP from Anywhere"
   vpc_id      = "${data.aws_vpc.environment.id}"
 
@@ -111,12 +113,12 @@ resource "aws_security_group" "web_inbound_sg" {
   }
 
   tags {
-    Name = "${var.environment}-web-inbound-sg"
+    Name = "${var.envrionment}-${var.app}-${var.role}-inbound-sg"
   }
 }
 
 resource "aws_security_group" "web_host_sg" {
-  name        = "${var.environment}-web-host"
+  name        = "${var.environment}-${var.app}-${var.role}-host"
   description = "Allow SSH and HTTP to web hosts"
   vpc_id      = "${data.aws_vpc.environment.id}"
 
@@ -135,14 +137,14 @@ resource "aws_security_group" "web_host_sg" {
     cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
   }
 
-   # HTTP access from the VPC
+  # HTTP access from the VPC
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
   }
-  
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -158,6 +160,6 @@ resource "aws_security_group" "web_host_sg" {
   }
 
   tags {
-    Name = "${var.environment}-web-host-sg"
+    Name = "${var.envrionment}-${var.app}-${var.role}-host-sg"
   }
 }

@@ -14,9 +14,9 @@ resource "aws_instance" "web" {
   ]
 
   tags {
-    Name  = "${var.app}-${var.role}-${count.index}"
-    Stage = "${var.environment}"
-    Roles = "${var.role}"
+    Name   = "${var.app}-${var.role}-${count.index}"
+    Stages = "${var.environment}"
+    Roles  = "${var.role}"
   }
 
   count = "${var.web_instance_count}"

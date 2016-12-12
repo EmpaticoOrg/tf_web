@@ -47,6 +47,10 @@ variable "domain" {
   description = "The domain of the site"
 }
 
+variable "zoneid" {
+  description = "Route 53 Zone ID"
+}
+
 variable "key" {
   default     = ""
   description = "Private key"

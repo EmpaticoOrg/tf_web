@@ -64,12 +64,8 @@ resource "aws_iam_server_certificate" "test" {
   }
 }
 
-resource "aws_route53_zone" "web" {
-  name = "${var.domain}"
-}
-
 resource "aws_route53_record" "web" {
-  zone_id = "${aws_route53_zone.web.zone_id}"
+  zone_id = "${var.zoneid}"
   name    = "*.${var.domain}"
   type    = "A"
 

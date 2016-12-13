@@ -52,8 +52,8 @@ After=network-online.target
 [Service]
 EnvironmentFile=-/etc/default/consul
 Restart=on-failure
-ExecStart=/usr/local/bin/consul agent $$CONSUL_FLAGS
-ExecReload=/bin/kill -HUP $$MAINPID
+ExecStart=/usr/local/bin/consul agent \$$CONSUL_FLAGS
+ExecReload=/bin/kill -HUP \$$MAINPID
 KillSignal=SIGINT
 
 [Install]

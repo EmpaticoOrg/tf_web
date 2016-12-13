@@ -18,9 +18,8 @@ EOF
 sudo service nginx start
 
 # Setup consul
-CONSUL=0.7.1
 cd /tmp
-curl https://releases.hashicorp.com/consul/${CONSUL}/consul_${CONSUL}_linux_amd64.zip -o consul.zip
+curl https://releases.hashicorp.com/consul/0.7.1/consul_0.7.1_linux_amd64.zip -o consul.zip
 
 echo "Installing Consul..."
 unzip consul.zip >/dev/null

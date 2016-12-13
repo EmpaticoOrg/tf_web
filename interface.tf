@@ -6,6 +6,14 @@ variable "environment" {
   description = "The name of our environment, i.e. development."
 }
 
+variable "encryption_key" {
+  description = "The Consul encryption key"
+}
+
+variable "mastertoken" {
+  description = "Consul master token"
+}
+
 variable "key_name" {
   description = "The AWS key pair to use for resources."
 }

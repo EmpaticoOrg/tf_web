@@ -2,12 +2,25 @@ data "aws_vpc" "environment" {
   id = "${var.vpc_id}"
 }
 
+data "template_file" "userdata" {
+  template = "${file("bootstrap.tpl")}"
+
+  vars {
+    consul_address = "consul.${var.domain}"
+    environment    = "${var.environment}"
+    encryption_key = "${var.encryption_key}"
+    name           = "${var.environment}-${var.app}-${var.role}-${count.index}"
+  }
+
+  count = "${var.web_instance_count}"
+}
+
 resource "aws_instance" "web" {
   ami           = "${lookup(var.ami, var.region)}"
   instance_type = "${var.instance_type}"
   key_name      = "${var.key_name}"
   subnet_id     = "${var.public_subnet_ids[0]}"
-  user_data     = "${file("${path.module}/files/web_bootstrap.sh")}"
+  user_data     = "${element(data.template_file.userdata.*.rendered, count.index)}"
 
   vpc_security_group_ids = [
     "${aws_security_group.web_host_sg.id}",

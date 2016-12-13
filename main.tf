@@ -3,7 +3,7 @@ data "aws_vpc" "environment" {
 }
 
 data "template_file" "userdata" {
-  template = "${file("files/bootstrap.tpl")}"
+  template = "${file("${path.module}/files/bootstrap.tpl")}"
 
   vars {
     consul_address = "consul.${var.domain}"

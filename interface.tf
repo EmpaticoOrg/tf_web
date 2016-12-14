@@ -6,6 +6,10 @@ variable "environment" {
   description = "The name of our environment, i.e. development."
 }
 
+variable "vpc_id" {
+  description = "The VPC ID"
+}
+
 variable "key_name" {
   description = "The AWS key pair to use for resources."
 }

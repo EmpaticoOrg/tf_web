@@ -29,7 +29,7 @@ resource "aws_instance" "web" {
 
 resource "aws_elb" "web" {
   name            = "${var.environment}-web-elb"
-  subnets         = ["${var.public_subnet_ids}"]
+  subnets         = ["${var.public_subnet_id}"]
   security_groups = ["${aws_security_group.web_inbound_sg.id}"]
 
   listener {

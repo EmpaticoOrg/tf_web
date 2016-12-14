@@ -10,14 +10,9 @@ variable "key_name" {
   description = "The AWS key pair to use for resources."
 }
 
-variable "public_subnet_ids" {
-  default     = []
-  description = "The list of public subnets to populate."
-}
-
-variable "private_subnet_ids" {
-  default     = []
-  description = "The list of private subnets to populate."
+variable "public_subnet_id" {
+  default     = ""
+  description = "The public subnets to populate."
 }
 
 variable "ami" {
@@ -26,7 +21,7 @@ variable "ami" {
     "us-west-1" = "ami-7c4b331c"
   }
 
-  description = "The AMIs to use for web and app instances."
+  description = "The AMIs to use for web instances."
 }
 
 variable "instance_type" {
@@ -39,16 +34,8 @@ variable "web_instance_count" {
   description = "The number of Web instances to create"
 }
 
-variable "vpc_id" {
-  description = "The VPC ID to launch in"
-}
-
 variable "domain" {
   description = "The domain of the site"
-}
-
-variable "zoneid" {
-  description = "Route 53 Zone ID"
 }
 
 variable "key" {

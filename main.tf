@@ -2,11 +2,15 @@ data "aws_vpc" "environment" {
   id = "${var.vpc_id}"
 }
 
+data "aws_route53_zone" "domain" {
+  name = "${var.domain}."
+}
+
 resource "aws_instance" "web" {
   ami           = "${lookup(var.ami, var.region)}"
   instance_type = "${var.instance_type}"
   key_name      = "${var.key_name}"
-  subnet_id     = "${var.public_subnet_ids[0]}"
+  subnet_id     = "${var.public_subnet_id}"
   user_data     = "${file("${path.module}/files/web_bootstrap.sh")}"
 
   vpc_security_group_ids = [
@@ -25,7 +29,7 @@ resource "aws_instance" "web" {
 
 resource "aws_elb" "web" {
   name            = "${var.environment}-web-elb"
-  subnets         = ["${var.public_subnet_ids[0]}"]
+  subnets         = ["${var.public_subnet_ids}"]
   security_groups = ["${aws_security_group.web_inbound_sg.id}"]
 
   listener {
@@ -65,8 +69,8 @@ resource "aws_iam_server_certificate" "test" {
 }
 
 resource "aws_route53_record" "web" {
-  zone_id = "${var.zoneid}"
-  name    = "*.${var.domain}"
+  zone_id = "${data.aws_route53_zone.domain.zone_id}"
+  name    = "www.${data.aws_route53_zone.domain.name}"
   type    = "A"
 
   alias {

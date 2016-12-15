@@ -7,12 +7,13 @@ data "aws_route53_zone" "domain" {
 }
 
 resource "aws_launch_configuration" "web" {
-  name            = "${var.environment}-${var.app}-${var.role}"
-  image_id        = "${lookup(var.ami, var.region)}"
-  instance_type   = "${var.instance_type}"
-  security_groups = ["${aws_security_group.web_host_sg.id}"]
-  user_data       = "${file("${path.module}/files/web_bootstrap.sh")}"
-  key_name        = "${var.key_name}"
+  name                        = "${var.environment}-${var.app}-${var.role}"
+  image_id                    = "${lookup(var.ami, var.region)}"
+  instance_type               = "${var.instance_type}"
+  security_groups             = ["${aws_security_group.web_host_sg.id}"]
+  associate_public_ip_address = false
+  user_data                   = "${file("${path.module}/files/web_bootstrap.sh")}"
+  key_name                    = "${var.key_name}"
 
   lifecycle {
     create_before_destroy = true

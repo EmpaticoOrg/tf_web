@@ -31,7 +31,7 @@ resource "aws_autoscaling_group" "web" {
 
   tag {
     key                 = "Name"
-    value               = "${var.environment}-${var.app}-${var.role}-${count.index}"
+    value               = "${var.environment}-${var.app}-${var.role}"
     propagate_at_launch = "true"
   }
 

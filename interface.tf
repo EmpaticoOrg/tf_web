@@ -33,9 +33,19 @@ variable "instance_type" {
   description = "The instance type to launch "
 }
 
-variable "web_instance_count" {
-  default     = 1
-  description = "The number of Web instances to create"
+variable "asg_min" {
+  description = "Min numbers of servers in ASG"
+  default     = "1"
+}
+
+variable "asg_max" {
+  description = "Max numbers of servers in ASG"
+  default     = "2"
+}
+
+variable "asg_desired" {
+  description = "Desired numbers of servers in ASG"
+  default     = "1"
 }
 
 variable "domain" {
@@ -64,6 +74,10 @@ output "web_elb_address" {
   value = "${aws_elb.web.dns_name}"
 }
 
-output "web_host_addresses" {
-  value = ["${aws_instance.web.*.private_ip}"]
+output "launch_configuration" {
+  value = "${aws_launch_configuration.web.id}"
+}
+
+output "asg_name" {
+  value = "${aws_autoscaling_group.web.id}"
 }

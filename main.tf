@@ -6,25 +6,38 @@ data "aws_route53_zone" "domain" {
   name = "${var.domain}."
 }
 
-resource "aws_instance" "web" {
-  ami           = "${lookup(var.ami, var.region)}"
-  instance_type = "${var.instance_type}"
-  key_name      = "${var.key_name}"
-  subnet_id     = "${var.public_subnet_id}"
-  user_data     = "${file("${path.module}/files/web_bootstrap.sh")}"
+resource "aws_launch_configuration" "web" {
+  name            = "${var.environment}-${var.app}-${var.role}"
+  image_id        = "${lookup(var.ami, var.region)}"
+  instance_type   = "${var.instance_type}"
+  security_groups = ["${aws_security_group.web_host_sg.id}"]
+  user_data       = "${file("${path.module}/files/web_bootstrap.sh")}"
+  key_name        = "${var.key_name}"
 
-  vpc_security_group_ids = [
-    "${aws_security_group.web_host_sg.id}",
-  ]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
 
-  tags {
-    Name    = "${var.environment}-${var.app}-${var.role}-${count.index}"
-    Project = "${var.app}"
-    Stages  = "${var.environment}"
-    Roles   = "${var.role}"
+resource "aws_autoscaling_group" "web" {
+  name                 = "${var.environment}-${var.app}-${var.role}-asg"
+  max_size             = "${var.asg_max}"
+  min_size             = "${var.asg_min}"
+  desired_capacity     = "${var.asg_desired}"
+  force_delete         = true
+  launch_configuration = "${aws_launch_configuration.web.name}"
+  load_balancers       = ["${aws_elb.web.name}"]
+  vpc_zone_identifier  = ["${var.public_subnet_id}"]
+
+  tag {
+    key                 = "Name"
+    value               = "${var.environment}-${var.app}-${var.role}-${count.index}"
+    propagate_at_launch = "true"
   }
 
-  count = "${var.web_instance_count}"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_elb" "web" {
@@ -54,8 +67,6 @@ resource "aws_elb" "web" {
     target              = "HTTP:80/"
     interval            = 30
   }
-
-  instances = ["${aws_instance.web.*.id}"]
 }
 
 resource "aws_iam_server_certificate" "test" {

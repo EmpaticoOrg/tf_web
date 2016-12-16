@@ -10,10 +10,8 @@ module "web" {
   environment        = "${var.environment}"
   vpc_id             = "${module.vpc.vpc_id}"
   public_subnet_id  = "${module.vpc.public_subnet_id}"
-  web_instance_count = "${var.web_instance_count}"
   role               = "${var.role}"
   app                = "${var.app}"
-  region             = "${var.region}"
   key_name           = "${var.key_name}"
   domain             = "${var.domain}"
   key                = "${file("files/key.pem")}"
@@ -22,10 +20,6 @@ module "web" {
 
 output "web_elb_address" {
   value = "${module.web.web_elb_address}"
-}
-
-output "web_host_addresses" {
-  value = ["${module.web.web_host_addresses}"]
 }
 ```
 

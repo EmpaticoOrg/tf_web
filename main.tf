@@ -16,7 +16,7 @@ data "aws_ami" "base_ami" {
 
 resource "aws_launch_configuration" "web" {
   name_prefix                 = "${var.environment}-${var.app}-${var.role}"
-  image_id                    = "${lookup(${data.aws_ami.base_ami.id}, var.region)}"
+  image_id                    = "${data.aws_ami.base_ami.id}"
   instance_type               = "${var.instance_type}"
   security_groups             = ["${aws_security_group.web_host_sg.id}"]
   associate_public_ip_address = false

@@ -19,15 +19,6 @@ variable "public_subnet_id" {
   description = "The public subnets to populate."
 }
 
-variable "ami" {
-  default = {
-    "us-east-1" = "ami-f652979b"
-    "us-west-1" = "ami-7c4b331c"
-  }
-
-  description = "The AMIs to use for web instances."
-}
-
 variable "instance_type" {
   default     = "t2.micro"
   description = "The instance type to launch "

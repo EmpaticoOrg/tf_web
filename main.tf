@@ -6,9 +6,17 @@ data "aws_route53_zone" "domain" {
   name = "${var.domain}."
 }
 
+data "aws_ami" "base_ami" {
+  filter {
+    name = "tag:Role"
+    values = ["base"]
+  }
+  most_recent = true
+}
+
 resource "aws_launch_configuration" "web" {
   name_prefix                 = "${var.environment}-${var.app}-${var.role}"
-  image_id                    = "${lookup(var.ami, var.region)}"
+  image_id                    = "${lookup(${data.aws_ami.base_ami.id}, var.region)}"
   instance_type               = "${var.instance_type}"
   security_groups             = ["${aws_security_group.web_host_sg.id}"]
   associate_public_ip_address = false

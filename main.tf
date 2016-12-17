@@ -41,7 +41,7 @@ resource "aws_launch_configuration" "web" {
 }
 
 resource "aws_autoscaling_group" "web" {
-  name                 = "${var.environment}-${var.app}-${var.role}-asg"
+  name                 = "${aws_launch_configuration.web.name}-asg"
   max_size             = "${var.asg_max}"
   min_size             = "${var.asg_min}"
   desired_capacity     = "${var.asg_desired}"

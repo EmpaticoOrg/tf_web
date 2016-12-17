@@ -15,11 +15,22 @@ data "aws_ami" "base_ami" {
   most_recent = true
 }
 
+data "aws_security_group" "prometheus" {
+  filter {
+    name   = "tag:Name"
+    values = ["${var.environment}-prometheus-sg"]
+  }
+}
+
 resource "aws_launch_configuration" "web" {
-  name_prefix                 = "${var.environment}-${var.app}-${var.role}"
-  image_id                    = "${data.aws_ami.base_ami.id}"
-  instance_type               = "${var.instance_type}"
-  security_groups             = ["${aws_security_group.web_host_sg.id}"]
+  name_prefix   = "${var.environment}-${var.app}-${var.role}"
+  image_id      = "${data.aws_ami.base_ami.id}"
+  instance_type = "${var.instance_type}"
+
+  security_groups = ["${aws_security_group.web_host_sg.id}",
+    "${data.aws_security_group.prometheus.id}",
+  ]
+
   associate_public_ip_address = false
   user_data                   = "${file("${path.module}/files/web_bootstrap.sh")}"
   key_name                    = "${var.key_name}"

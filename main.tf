@@ -23,7 +23,7 @@ data "aws_security_group" "prometheus" {
 }
 
 resource "aws_launch_configuration" "web" {
-  name_prefix   = "${var.environment}-${var.app}-${var.role}"
+  name_prefix   = "${var.environment}-${var.app}-${var.role}-"
   image_id      = "${data.aws_ami.base_ami.id}"
   instance_type = "${var.instance_type}"
 

@@ -22,10 +22,16 @@ data "aws_security_group" "prometheus" {
   }
 }
 
+resource "aws_iam_instance_profile" "consul" {
+  name  = "consul"
+  roles = ["ConsulInit"]
+}
+
 resource "aws_launch_configuration" "web" {
-  name_prefix   = "${var.environment}-${var.app}-${var.role}-"
-  image_id      = "${data.aws_ami.base_ami.id}"
-  instance_type = "${var.instance_type}"
+  name_prefix          = "${var.environment}-${var.app}-${var.role}-"
+  image_id             = "${data.aws_ami.base_ami.id}"
+  instance_type        = "${var.instance_type}"
+  iam_instance_profile = "${aws_iam_instance_profile.consul.name}"
 
   security_groups = ["${aws_security_group.web_host_sg.id}",
     "${data.aws_security_group.prometheus.id}",

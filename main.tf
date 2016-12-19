@@ -23,8 +23,8 @@ data "aws_security_group" "prometheus" {
 }
 
 resource "aws_iam_instance_profile" "consul" {
-  name  = "consul"
-  roles = ["ConsulInit"]
+  name_prefix = "consul"
+  roles       = ["ConsulInit"]
 }
 
 resource "aws_launch_configuration" "web" {

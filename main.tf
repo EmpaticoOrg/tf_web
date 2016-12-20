@@ -15,10 +15,10 @@ data "aws_ami" "base_ami" {
   most_recent = true
 }
 
-data "aws_security_group" "prometheus" {
+data "aws_security_group" "riemann" {
   filter {
     name   = "tag:Name"
-    values = ["${var.environment}-prometheus-sg"]
+    values = ["${var.environment}-riemann-sg"]
   }
 }
 
@@ -34,7 +34,7 @@ resource "aws_launch_configuration" "web" {
   iam_instance_profile = "${aws_iam_instance_profile.consul.name}"
 
   security_groups = ["${aws_security_group.web_host_sg.id}",
-    "${data.aws_security_group.prometheus.id}",
+    "${data.aws_security_group.riemann.id}",
   ]
 
   associate_public_ip_address = false

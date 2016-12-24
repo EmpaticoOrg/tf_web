@@ -167,13 +167,6 @@ resource "aws_security_group" "web_host_sg" {
   description = "Allow SSH and HTTP to web hosts"
   vpc_id      = "${data.aws_vpc.environment.id}"
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
-  }
-
   # HTTP access from the VPC
   ingress {
     from_port   = 80

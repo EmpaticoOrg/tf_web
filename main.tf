@@ -15,10 +15,10 @@ data "aws_ami" "base_ami" {
   most_recent = true
 }
 
-data "aws_security_group" "riemann" {
+data "aws_security_group" "core" {
   filter {
     name   = "tag:Name"
-    values = ["${var.environment}-riemann-sg"]
+    values = ["core-to-${var.environment}-sg"]
   }
 }
 
@@ -34,7 +34,7 @@ resource "aws_launch_configuration" "web" {
   iam_instance_profile = "${aws_iam_instance_profile.consul.name}"
 
   security_groups = ["${aws_security_group.web_host_sg.id}",
-    "${data.aws_security_group.riemann.id}",
+    "${data.aws_security_group.core.id}",
   ]
 
   associate_public_ip_address = false

@@ -103,6 +103,12 @@ resource "aws_elb" "web" {
     target              = "HTTP:80/"
     interval            = 30
   }
+
+  access_logs {
+    bucket = "empatico-elb-logs"
+    bucket_prefix = "${var.app}"
+    enabled = true
+  }
 }
 
 resource "aws_iam_server_certificate" "test" {

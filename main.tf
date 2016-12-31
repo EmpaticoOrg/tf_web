@@ -77,7 +77,7 @@ resource "aws_autoscaling_group" "web" {
 }
 
 resource "aws_elb" "web" {
-  name            = "${var.environment}-web-elb"
+  name            = "${var.environment}-${var.role}-${var.app}-elb"
   subnets         = ["${var.public_subnet_id}"]
   security_groups = ["${aws_security_group.web_inbound_sg.id}"]
 

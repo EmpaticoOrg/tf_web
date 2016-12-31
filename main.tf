@@ -28,7 +28,7 @@ resource "aws_iam_instance_profile" "consul" {
 }
 
 resource "aws_launch_configuration" "web" {
-  name_prefix          = "${var.environment}-${var.app}-${var.role}-"
+  name_prefix          = "${var.environment}-${var.role}-${var.app}-"
   image_id             = "${data.aws_ami.base_ami.id}"
   instance_type        = "${var.instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.consul.name}"
@@ -77,7 +77,7 @@ resource "aws_autoscaling_group" "web" {
 }
 
 resource "aws_elb" "web" {
-  name            = "${var.environment}-${var.role}-${var.app}-elb"
+  name            = "${var.environment}-${var.role}-${var.app}"
   subnets         = ["${var.public_subnet_id}"]
   security_groups = ["${aws_security_group.web_inbound_sg.id}"]
 

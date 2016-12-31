@@ -47,14 +47,14 @@ resource "aws_launch_configuration" "web" {
 }
 
 resource "aws_autoscaling_group" "web" {
-  name                 = "${aws_launch_configuration.web.name}-asg"
-  max_size             = "${var.asg_max}"
-  min_size             = "${var.asg_min}"
-  desired_capacity     = "${var.asg_desired}"
-  force_delete         = true
-  launch_configuration = "${aws_launch_configuration.web.name}"
-  load_balancers       = ["${aws_elb.web.name}"]
-  vpc_zone_identifier  = ["${var.public_subnet_id}"]
+  name                      = "${aws_launch_configuration.web.name}-asg"
+  max_size                  = "${var.asg_max}"
+  min_size                  = "${var.asg_min}"
+  desired_capacity          = "${var.asg_desired}"
+  force_delete              = true
+  launch_configuration      = "${aws_launch_configuration.web.name}"
+  load_balancers            = ["${aws_elb.web.name}"]
+  vpc_zone_identifier       = ["${var.public_subnet_id}"]
   wait_for_elb_capacity     = 2
   health_check_grace_period = 300
   health_check_type         = "ELB"
@@ -105,9 +105,9 @@ resource "aws_elb" "web" {
   }
 
   access_logs {
-    bucket = "empatico-elb-logs"
+    bucket        = "empatico-elb-logs"
     bucket_prefix = "${var.environment}-${var.app}"
-    enabled = true
+    enabled       = true
   }
 }
 
@@ -171,17 +171,17 @@ resource "aws_security_group" "web_host_sg" {
 
   # HTTP access from the VPC
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["${aws_elb.web.source_security_group_id}"]
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = ["${aws_elb.web.source_security_group_id}"]
   }
 
   ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["${aws_elb.web.source_security_group_id}"]
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = ["${aws_elb.web.source_security_group_id}"]
   }
 
   egress {

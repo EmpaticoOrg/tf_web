@@ -174,15 +174,14 @@ resource "aws_security_group" "web_host_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
+    cidr_blocks = ["${aws_elb.web.source_security_group_id}"]
   }
 
-  # HTTP access from the VPC
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
+    cidr_blocks = ["${aws_elb.web.source_security_group_id}"]
   }
 
   egress {

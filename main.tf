@@ -61,7 +61,7 @@ resource "aws_autoscaling_group" "web" {
 
   tag {
     key                 = "Name"
-    value               = "${var.environment}-${var.app}-${var.role}"
+    value               = "${var.environment}-${var.role}-${var.app}"
     propagate_at_launch = "true"
   }
 
@@ -134,7 +134,7 @@ resource "aws_route53_record" "web" {
 }
 
 resource "aws_security_group" "web_inbound_sg" {
-  name        = "${var.environment}-${var.app}-${var.role}-inbound"
+  name        = "${var.environment}-${var.role}-${var.app}-inbound"
   description = "Allow HTTP from Anywhere"
   vpc_id      = "${data.aws_vpc.environment.id}"
 
@@ -160,12 +160,12 @@ resource "aws_security_group" "web_inbound_sg" {
   }
 
   tags {
-    Name = "${var.environment}-${var.app}-${var.role}-inbound-sg"
+    Name = "${var.environment}-${var.role}-${var.app}-inbound-sg"
   }
 }
 
 resource "aws_security_group" "web_host_sg" {
-  name        = "${var.environment}-${var.app}-${var.role}-host"
+  name        = "${var.environment}-${var.role}-${var.app}-host"
   description = "Allow SSH and HTTP to web hosts"
   vpc_id      = "${data.aws_vpc.environment.id}"
 
@@ -192,6 +192,6 @@ resource "aws_security_group" "web_host_sg" {
   }
 
   tags {
-    Name = "${var.environment}-${var.app}-${var.role}-host-sg"
+    Name = "${var.environment}-${var.role}-${var.app}-host-sg"
   }
 }

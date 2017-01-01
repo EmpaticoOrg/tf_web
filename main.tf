@@ -134,7 +134,7 @@ resource "aws_route53_record" "web" {
 }
 
 resource "aws_security_group" "web_inbound_sg" {
-  name        = "${var.environment}-${var.role}-${var.app}-inbound"
+  name        = "${var.environment}-${var.role}-${var.app}-elb"
   description = "Allow HTTP from Anywhere"
   vpc_id      = "${data.aws_vpc.environment.id}"
 
@@ -160,12 +160,12 @@ resource "aws_security_group" "web_inbound_sg" {
   }
 
   tags {
-    Name = "${var.environment}-${var.role}-${var.app}-inbound-sg"
+    Name = "${var.environment}-${var.role}-${var.app}-elb-sg"
   }
 }
 
 resource "aws_security_group" "web_host_sg" {
-  name        = "${var.environment}-${var.role}-${var.app}-host"
+  name        = "${var.environment}-${var.role}-${var.app}"
   description = "Allow SSH and HTTP to web hosts"
   vpc_id      = "${data.aws_vpc.environment.id}"
 
@@ -192,6 +192,6 @@ resource "aws_security_group" "web_host_sg" {
   }
 
   tags {
-    Name = "${var.environment}-${var.role}-${var.app}-host-sg"
+    Name = "${var.environment}-${var.role}-${var.app}-sg"
   }
 }

@@ -38,7 +38,6 @@ resource "aws_launch_configuration" "web" {
   ]
 
   associate_public_ip_address = false
-  user_data                   = "${file("${path.module}/files/web_bootstrap.sh")}"
   key_name                    = "${var.key_name}"
 
   lifecycle {

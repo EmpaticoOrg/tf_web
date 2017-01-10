@@ -55,7 +55,7 @@ resource "aws_autoscaling_group" "web" {
   load_balancers            = ["${aws_elb.web.name}"]
   vpc_zone_identifier       = ["${var.public_subnet_id}"]
   wait_for_elb_capacity     = 2
-  health_check_grace_period = 300
+  health_check_grace_period = 600
   health_check_type         = "ELB"
 
   tag {

@@ -22,6 +22,11 @@ data "aws_security_group" "core" {
   }
 }
 
+data "aws_acm_certificate" "certificate" {
+  domain = "${var.domain}"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_iam_instance_profile" "consul" {
   name_prefix = "consul"
   roles       = ["ConsulInit"]
@@ -105,7 +110,7 @@ resource "aws_elb" "web" {
     instance_protocol  = "http"
     lb_port            = 443
     lb_protocol        = "https"
-    ssl_certificate_id = "${aws_iam_server_certificate.test.arn}"
+    ssl_certificate_id = "${data.aws_acm_certificate.certificate.arn}"
   }
 
   health_check {
@@ -120,16 +125,6 @@ resource "aws_elb" "web" {
     bucket        = "empatico-elb-logs"
     bucket_prefix = "${var.environment}-${var.role}"
     enabled       = true
-  }
-}
-
-resource "aws_iam_server_certificate" "test" {
-  name_prefix      = "test"
-  certificate_body = "${var.cert}"
-  private_key      = "${var.key}"
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 

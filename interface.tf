@@ -39,16 +39,6 @@ variable "domain" {
   description = "The domain of the site"
 }
 
-variable "key" {
-  default     = ""
-  description = "Private key"
-}
-
-variable "cert" {
-  default     = ""
-  description = "Certificate"
-}
-
 variable "app" {
   description = "Name of application"
 }

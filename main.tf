@@ -23,7 +23,7 @@ data "aws_security_group" "core" {
 }
 
 data "aws_acm_certificate" "certificate" {
-  domain = "${var.domain}"
+  domain   = "${var.domain}"
   statuses = ["ISSUED"]
 }
 
@@ -125,6 +125,7 @@ resource "aws_elb" "web" {
     bucket        = "empatico-elb-logs"
     bucket_prefix = "${var.environment}-${var.role}"
     enabled       = true
+    interval      = 5
   }
 }
 

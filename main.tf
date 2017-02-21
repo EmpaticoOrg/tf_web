@@ -23,7 +23,7 @@ data "aws_security_group" "core" {
 }
 
 data "aws_acm_certificate" "certificate" {
-  domain   = "${var.domain}"
+  domain   = "*.${var.domain}"
   statuses = ["ISSUED"]
 }
 
